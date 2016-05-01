@@ -866,7 +866,7 @@ public class RobertDaronChuckGroupProject extends Application {
 
         
         nextButton.setOnAction(a->{
-                getMeals();
+                ();
         });
 
         
