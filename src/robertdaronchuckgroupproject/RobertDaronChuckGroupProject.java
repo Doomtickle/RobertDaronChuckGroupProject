@@ -3,11 +3,13 @@ package robertdaronchuckgroupproject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -632,8 +634,9 @@ public class RobertDaronChuckGroupProject extends Application {
         spScene4.getChildren().addAll(vb);
         
         //airfare validation
-        TextField airfare = new NumberTextField();  //made a new class to restrict the type of input (only positive intege
-        airfare.setText("0.00");
+        TextField airfare = new NumberTextField();  
+        //made a new class to restrict the type of input (only positive integers
+        airfare.setPromptText("0.00");
         airfare.setMaxWidth(100);
         airfare.setPrefColumnCount(8);
         vb.getChildren().addAll(airfare);
@@ -648,8 +651,11 @@ public class RobertDaronChuckGroupProject extends Application {
         pStage.setScene(scene4);
         
         nextButton.setOnAction(a->{
-        	
-        	airfareFee = Double.parseDouble(airfare.getText());
+            
+                if (airfare.getText().trim().length() == 0)
+                    airfareFee = 0.0;
+                else
+                    airfareFee = Double.parseDouble(airfare.getText());
         	
             getCarFees();
         });
@@ -760,8 +766,26 @@ public class RobertDaronChuckGroupProject extends Application {
         pStage.setScene(scene5);
         
         nextButton.setOnAction(a->{
-
+            
+            if(cost1.getText().trim().length() == 0)
+                rentalFees = 0.0;
+            else
+                rentalFees = Double.parseDouble(cost1.getText());
+            if (cost2.getText().trim().length() == 0)
+                parkingFees = 0.0;
+            else
+                parkingFees = Double.parseDouble(cost2.getText());
+            if (cost3.getText().trim().length() == 0)
+                cabFees = 0.0;
+            else
+                cabFees = Double.parseDouble(cost3.getText());
+            if (cost4.getText().trim().length() == 0)
+                milesDriven = 0;
+            else
+                milesDriven = Integer.parseInt(cost4.getText());
+                
         	getHotelRegFees();
+                
         });
 
         
@@ -866,6 +890,15 @@ public class RobertDaronChuckGroupProject extends Application {
 
         
         nextButton.setOnAction(a->{
+            
+            if (cost1.getText().trim().length() == 0)
+                hotelFees = 0.0;
+            else
+                hotelFees = Double.parseDouble(cost1.getText());
+            if (cost2.getText().trim().length() == 0)
+                regFees = 0.0;
+            else
+                regFees = Double.parseDouble(cost2.getText());
                 getMeals();
         });
 
@@ -970,9 +1003,9 @@ public class RobertDaronChuckGroupProject extends Application {
         //end charge frame
         
         //costs setTextfield values to 00.00
-        cost1.setText("0.0");
-        cost2.setText("0.0");
-        cost3.setText("0.0");
+        cost1.setPromptText("0.0");
+        cost2.setPromptText("0.0");
+        cost3.setPromptText("0.0");
         
         
         //add values to the array
@@ -1370,12 +1403,12 @@ public class RobertDaronChuckGroupProject extends Application {
         outFile.println("-------------------------------------------------------");
         outFile.println("Expense Details----------------------------------------");
         outFile.println("-------------------------------------------------------");
-        outFile.println("Airfare:         $" + airfareFee);
-        outFile.println("Cab Fees:        $" + cabFees);
-        outFile.println("Rental Car Fees: $" + rentalFees);
-        outFile.println("Parking Fees:    $" + parkingFees);
-        outFile.println("Hotel Fees:      $" + hotelFees);
-        outFile.println("Seminar Fees:    $" + regFees);
+        outFile.println("Airfare:         " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(airfareFee)));
+        outFile.println("Cab Fees:        " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(cabFees)));
+        outFile.println("Rental Car Fees: " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(rentalFees)));
+        outFile.println("Parking Fees:    " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(parkingFees)));
+        outFile.println("Hotel Fees:      " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(hotelFees)));
+        outFile.println("Seminar Fees:    " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(regFees)));
         outFile.println("-------------------------------------------------------");
         outFile.println("Meal Cost Breakdown------------------------------------");
         outFile.println("-------------------------------------------------------");
@@ -1386,15 +1419,15 @@ public class RobertDaronChuckGroupProject extends Application {
             outFile.println("Dinner Day " + (i+1) + ": $" + dinnerArray.get(i).toString());
         }
         outFile.println("-------------------------------------------------------");
-        outFile.println("Total Expenses:     $" + total);
-        outFile.println("Total Allowable:    $" + totalAllowed);
+        outFile.println("Total Expenses:     " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(total)));
+        outFile.println("Total Allowable:    " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(totalAllowed)));
         if (deductionsTotal <= 0)
         outFile.println("Employee Owes:      $0.00");
         else
-        outFile.println("Employee Owes:      $" + deductionsTotal);
+        outFile.println("Employee Owes:      " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format(deductionsTotal)));
         if (totalAllowed - total >0)
-        outFile.println("Employee Saved:     $" + (totalAllowed - total));
-        outFile.println("Miles Reimbursment: $" + (MILES*milesDriven));
+        outFile.println("Employee Saved:     " + (NumberFormat.getCurrencyInstance(new Locale("en", "US")).format((totalAllowed - total))));
+        outFile.println("Miles Reimbursment: " + (MILES*milesDriven));
         outFile.close();
         
         showFile(fileName);
